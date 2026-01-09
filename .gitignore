@@ -175,5 +175,31 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Data directories (tracked by DVC)
 /data/raw/
 /data/processed/
+
+# Torch model files
+*.pt
+*.pth
+*.ckpt
+
+# Profiling files
+*.prof
+profile.txt
+*.trace.json
+trace.json
+log/
+
+# Wandb experiment tracking
+wandb/
+
+# Hydra outputs
+outputs/
+
+# Credentials
+.config/gcloud/application_default_credentials.json
+
+# Claude
+CLAUDE.md
