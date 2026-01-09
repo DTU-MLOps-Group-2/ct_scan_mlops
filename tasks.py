@@ -144,7 +144,11 @@ def docker_train(ctx: Context, cuda: bool = True) -> None:
     """
     image = "train-cuda:latest" if cuda else "train:latest"
     gpu_flag = "--gpus all" if cuda else ""
-    ctx.run(f"docker run {gpu_flag} -v $(pwd)/data:/app/data -v $(pwd)/models:/app/models {image}", echo=True, pty=not WINDOWS)
+    ctx.run(
+        f"docker run {gpu_flag} -v $(pwd)/data:/app/data -v $(pwd)/models:/app/models {image}",
+        echo=True,
+        pty=not WINDOWS,
+    )
 
 
 @task
@@ -233,4 +237,6 @@ def api(ctx: Context, reload: bool = True, port: int = 8000) -> None:
         port: Port to run the server on
     """
     reload_flag = " --reload" if reload else ""
-    ctx.run(f"uv run uvicorn {PROJECT_NAME}.api:app --host 0.0.0.0 --port {port}{reload_flag}", echo=True, pty=not WINDOWS)
+    ctx.run(
+        f"uv run uvicorn {PROJECT_NAME}.api:app --host 0.0.0.0 --port {port}{reload_flag}", echo=True, pty=not WINDOWS
+    )

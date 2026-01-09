@@ -1,4 +1,4 @@
-#This script downloads the latest version of the Brain MRI Images for Brain Tumor Detection dataset from Kaggle.
+# This script downloads the latest version of the Brain MRI Images for Brain Tumor Detection dataset from Kaggle.
 import shutil
 from pathlib import Path
 
