@@ -7,7 +7,7 @@ name = "ct_scan_mlops"
 version = "0.0.1"
 description = "Chest CT scan multi-classification model for lung tumor detection using PyTorch Lightning"
 authors = [
-  { name = "MLOps Group 2", email = "s204696@dtu.dk" },
+  { name = "MLOps Group 2", email = "s204696@dtu.dk, s250898@dtu.dk" },
 ]
 license = { file = "LICENSE" }
 keywords = ["machine learning", "MLOps", "medical imaging", "chest CT", "lung cancer"]
