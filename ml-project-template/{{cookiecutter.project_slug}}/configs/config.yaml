@@ -1,0 +1,21 @@
+{% if cookiecutter.use_hydra == "yes" -%}
+defaults:
+  - model: default
+  - data: default
+  - train: default
+  - _self_
+
+experiment_name: {{ cookiecutter.project_slug }}
+output_dir: outputs/${experiment_name}
+
+{% if cookiecutter.use_wandb == "yes" -%}
+wandb:
+  project: {{ cookiecutter.project_slug }}
+  entity: ""  # Set your W&B entity here
+  mode: online  # online, offline, disabled
+{% endif -%}
+{% else -%}
+# Hydra not enabled. This file can be used for manual config loading.
+experiment_name: {{ cookiecutter.project_slug }}
+output_dir: outputs
+{% endif %}

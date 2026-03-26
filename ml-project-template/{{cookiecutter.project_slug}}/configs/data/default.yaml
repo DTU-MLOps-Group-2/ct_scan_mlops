@@ -1,0 +1,6 @@
+data_dir: data
+image_size: 224
+batch_size: 32
+num_workers: 4
+val_split: 0.2
+test_split: 0.1

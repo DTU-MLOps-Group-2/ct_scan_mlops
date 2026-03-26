@@ -1,0 +1,21 @@
+{% if cookiecutter.use_wandb == "yes" -%}
+program: src/{{ cookiecutter.project_slug }}/train.py
+method: bayes
+metric:
+  name: val_acc
+  goal: maximize
+parameters:
+  train.lr:
+    distribution: log_uniform_values
+    min: 0.0001
+    max: 0.01
+  train.batch_size:
+    values: [16, 32, 64]
+  train.max_epochs:
+    value: 30
+  model.num_classes:
+    value: 10
+{% else -%}
+# W&B not enabled. This is a placeholder sweep config.
+# Enable W&B by setting use_wandb=yes during project creation.
+{% endif %}

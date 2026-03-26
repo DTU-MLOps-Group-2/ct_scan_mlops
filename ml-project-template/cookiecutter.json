@@ -1,0 +1,15 @@
+{
+    "project_name": "My ML Project",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+    "project_description": "A machine learning project",
+    "author_name": "Your Name",
+    "author_email": "you@example.com",
+    "python_version": "3.12",
+    "license": ["MIT", "Apache-2.0", "BSD-3-Clause"],
+    "use_wandb": ["yes", "no"],
+    "use_hydra": ["yes", "no"],
+    "use_docker": ["yes", "no"],
+    "use_dvc": ["yes", "no"],
+    "use_fastapi": ["yes", "no"],
+    "use_github_actions": ["yes", "no"]
+}

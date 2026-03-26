@@ -1,0 +1,25 @@
+{%- if cookiecutter.use_docker == "yes" %}
+name: Docker Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dockerfiles/**"
+      - "pyproject.toml"
+      - "src/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build training image
+        run: docker build -t {{ cookiecutter.project_slug }}-train:latest -f dockerfiles/train.dockerfile .
+
+      - name: Build API image
+        run: docker build -t {{ cookiecutter.project_slug }}-api:latest -f dockerfiles/api.dockerfile .
+{%- else %}
+# Docker CI disabled. Enable by setting use_docker=yes during project creation.
+{%- endif %}
