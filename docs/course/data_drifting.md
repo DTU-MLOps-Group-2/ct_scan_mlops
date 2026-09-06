@@ -21,19 +21,16 @@ from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset, DataQualityPreset
 
 # Create report
-report = Report(metrics=[
-    DataDriftPreset(),
-    DataQualityPreset()
-])
+report = Report(metrics=[DataDriftPreset(), DataQualityPreset()])
 
 # Run analysis
 report.run(
-    reference_data=training_data,    # Original training data
-    current_data=production_data     # Recent production data
+    reference_data=training_data,  # Original training data
+    current_data=production_data,  # Recent production data
 )
 
 # Save report
-report.save_html('drift_report.html')
+report.save_html("drift_report.html")
 ```
 
 ### Detection Presets
@@ -51,22 +48,20 @@ For CI/CD integration:
 
 ```python
 from evidently.test_suite import TestSuite
-from evidently.tests import (
-    TestNumberOfMissingValues,
-    TestShareOfDriftedColumns,
-    TestColumnDrift
-)
+from evidently.tests import TestNumberOfMissingValues, TestShareOfDriftedColumns, TestColumnDrift
 
-test_suite = TestSuite(tests=[
-    TestNumberOfMissingValues(lte=0),
-    TestShareOfDriftedColumns(lt=0.3),
-    TestColumnDrift(column_name='feature_1')
-])
+test_suite = TestSuite(
+    tests=[
+        TestNumberOfMissingValues(lte=0),
+        TestShareOfDriftedColumns(lt=0.3),
+        TestColumnDrift(column_name="feature_1"),
+    ]
+)
 
 test_suite.run(reference_data=ref_data, current_data=curr_data)
 result = test_suite.as_dict()
 
-if not result['summary']['all_passed']:
+if not result["summary"]["all_passed"]:
     raise Exception("Data drift detected!")
 ```
 
@@ -82,17 +77,15 @@ from datetime import datetime
 app = FastAPI()
 predictions_log = []
 
+
 def log_prediction(features, prediction):
-    predictions_log.append({
-        'timestamp': datetime.now(),
-        'features': features,
-        'prediction': prediction
-    })
+    predictions_log.append({"timestamp": datetime.now(), "features": features, "prediction": prediction})
+
 
 @app.post("/predict")
 async def predict(data: dict, background_tasks: BackgroundTasks):
-    prediction = model.predict(data['features'])
-    background_tasks.add_task(log_prediction, data['features'], prediction)
+    prediction = model.predict(data["features"])
+    background_tasks.add_task(log_prediction, data["features"], prediction)
     return {"prediction": prediction}
 ```
 
@@ -102,7 +95,7 @@ async def predict(data: dict, background_tasks: BackgroundTasks):
 @app.get("/monitor")
 async def monitor():
     # Get reference data
-    reference = pd.read_csv('training_data.csv')
+    reference = pd.read_csv("training_data.csv")
 
     # Get recent predictions
     current = pd.DataFrame(predictions_log[-1000:])
