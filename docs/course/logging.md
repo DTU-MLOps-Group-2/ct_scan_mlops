@@ -43,6 +43,7 @@ logger.critical("Critical message")
 # File rotation
 logger.add("file.log", rotation="100 MB")
 
+
 # Error catching
 @logger.catch
 def risky_function():
@@ -70,18 +71,10 @@ wandb login  # Enter API key
 ```python
 import wandb
 
-wandb.init(project="my-project", config={
-    "learning_rate": 0.001,
-    "epochs": 10,
-    "batch_size": 32
-})
+wandb.init(project="my-project", config={"learning_rate": 0.001, "epochs": 10, "batch_size": 32})
 
 for epoch in range(epochs):
-    wandb.log({
-        "train_loss": train_loss,
-        "val_loss": val_loss,
-        "accuracy": accuracy
-    })
+    wandb.log({"train_loss": train_loss, "val_loss": val_loss, "accuracy": accuracy})
 
 wandb.finish()
 ```

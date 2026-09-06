@@ -24,12 +24,15 @@ After installing with `pip install -e .`, commands become callable directly from
 **Basic structure**:
 ```python
 import typer
+
 app = typer.Typer()
+
 
 @app.command()
 def hello(count: int = 1, name: str = "World"):
     for x in range(count):
         typer.echo(f"Hello {name}!")
+
 
 if __name__ == "__main__":
     app()
@@ -40,9 +43,11 @@ if __name__ == "__main__":
 train_app = typer.Typer()
 app.add_typer(train_app, name="train")
 
+
 @train_app.command()
 def svm(kernel: str = "linear"):
     pass
+
 
 @train_app.command()
 def neural_net(epochs: int = 10):
@@ -58,11 +63,13 @@ Simplifies running complex terminal commands:
 ```python
 from invoke import task
 
+
 @task
 def git(ctx, message):
     ctx.run("git add .")
     ctx.run(f"git commit -m '{message}'")
     ctx.run("git push")
+
 
 @task
 def setup(ctx):
@@ -90,9 +97,9 @@ python script.py train --help
 ```python
 @app.command()
 def train(
-    epochs: int,                    # Required (no default)
-    lr: float = 0.001,             # Optional with default
-    model: str = typer.Option(...) # Required option
+    epochs: int,  # Required (no default)
+    lr: float = 0.001,  # Optional with default
+    model: str = typer.Option(...),  # Required option
 ):
     pass
 ```
@@ -102,10 +109,12 @@ def train(
 ```python
 from enum import Enum
 
+
 class ModelType(str, Enum):
     cnn = "cnn"
     rnn = "rnn"
     transformer = "transformer"
+
 
 @app.command()
 def train(model_type: ModelType = ModelType.cnn):

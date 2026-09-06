@@ -21,12 +21,9 @@ torch.onnx.export(
     model,
     dummy_input,
     "model.onnx",
-    input_names=['input'],
-    output_names=['output'],
-    dynamic_axes={
-        'input': {0: 'batch_size'},
-        'output': {0: 'batch_size'}
-    }
+    input_names=["input"],
+    output_names=["output"],
+    dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
 )
 ```
 
@@ -44,7 +41,7 @@ onnx.checker.check_model(onnx_model)
 import onnxruntime as ort
 
 ort_session = ort.InferenceSession("model.onnx")
-ort_inputs = {'input': dummy_input.numpy()}
+ort_inputs = {"input": dummy_input.numpy()}
 ort_outputs = ort_session.run(None, ort_inputs)
 
 torch_outputs = model(dummy_input).detach().numpy()
@@ -56,12 +53,9 @@ np.testing.assert_allclose(torch_outputs, ort_outputs[0], rtol=1e-3, atol=1e-5)
 ```python
 import onnxruntime as ort
 
-session = ort.InferenceSession(
-    "model.onnx",
-    providers=['CUDAExecutionProvider', 'CPUExecutionProvider']
-)
+session = ort.InferenceSession("model.onnx", providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
 
-outputs = session.run(None, {'input': input_array})
+outputs = session.run(None, {"input": input_array})
 ```
 
 ## Dynamic Batching
@@ -71,6 +65,7 @@ Collect multiple requests and process together:
 ```python
 # Using BentoML
 import bentoml
+
 
 @bentoml.service
 class MyService:
@@ -126,11 +121,7 @@ class Ensemble:
 import torch.quantization
 
 # Dynamic quantization
-quantized_model = torch.quantization.quantize_dynamic(
-    model,
-    {torch.nn.Linear},
-    dtype=torch.qint8
-)
+quantized_model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
 ```
 
 ### Pruning
@@ -140,8 +131,8 @@ import torch.nn.utils.prune as prune
 
 # Global unstructured pruning
 parameters_to_prune = [
-    (model.layer1, 'weight'),
-    (model.layer2, 'weight'),
+    (model.layer1, "weight"),
+    (model.layer2, "weight"),
 ]
 
 prune.global_unstructured(
