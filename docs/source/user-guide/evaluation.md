@@ -101,11 +101,7 @@ loaded = loader.load()
 _, _, test_loader = create_dataloaders(loaded.config)
 
 # Run inference
-engine = InferenceEngine(
-    model=loaded.model,
-    device=device,
-    uses_features=loaded.uses_features
-)
+engine = InferenceEngine(model=loaded.model, device=device, uses_features=loaded.uses_features)
 results = engine.run_inference(test_loader)
 
 # Evaluate performance
