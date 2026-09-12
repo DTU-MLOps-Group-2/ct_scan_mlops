@@ -77,6 +77,7 @@ Simplified multi-GPU training:
 ```python
 import pytorch_lightning as pl
 
+
 class MyModel(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
@@ -84,11 +85,8 @@ class MyModel(pl.LightningModule):
         loss = self.criterion(output, y)
         return loss
 
-trainer = pl.Trainer(
-    accelerator='gpu',
-    devices=2,
-    strategy='ddp'
-)
+
+trainer = pl.Trainer(accelerator="gpu", devices=2, strategy="ddp")
 
 trainer.fit(model, dataloader)
 ```
@@ -119,7 +117,7 @@ for batch in dataloader:
     scaler.update()
 
 # Lightning
-trainer = pl.Trainer(precision='16-mixed')
+trainer = pl.Trainer(precision="16-mixed")
 ```
 
 ## Best Practices

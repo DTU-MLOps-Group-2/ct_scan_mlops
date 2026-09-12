@@ -50,10 +50,12 @@ model:
 import hydra
 from omegaconf import DictConfig
 
+
 @hydra.main(config_path="configs", config_name="config", version_base=None)
 def main(cfg: DictConfig):
     print(cfg.hyperparameters.batch_size)
     print(cfg.model.type)
+
 
 if __name__ == "__main__":
     main()
@@ -99,10 +101,12 @@ hyperparameters:
 ```python
 from hydra.utils import instantiate
 
+
 @dataclass
 class ModelConfig:
     _target_: str
     hidden_size: int
+
 
 # In config.yaml:
 # model:
@@ -142,6 +146,7 @@ outputs/
 import logging
 
 log = logging.getLogger(__name__)
+
 
 @hydra.main(config_path="configs", config_name="config")
 def main(cfg):

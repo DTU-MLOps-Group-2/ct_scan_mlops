@@ -125,6 +125,7 @@ parameters:
 
 import timm
 
+
 class TimmModel(nn.Module):
     """Universal wrapper for timm models (ResNet34, EfficientNet, etc.)."""
 

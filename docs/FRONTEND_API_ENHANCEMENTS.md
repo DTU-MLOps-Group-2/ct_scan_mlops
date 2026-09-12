@@ -98,10 +98,7 @@ Process multiple images efficiently:
 ```python
 # Upload up to 20 images
 files = [image1.png, image2.jpg, image3.jpeg]
-response = requests.post(
-    "http://localhost:8000/predict/batch",
-    files=[("files", open(f, "rb")) for f in files]
-)
+response = requests.post("http://localhost:8000/predict/batch", files=[("files", open(f, "rb")) for f in files])
 ```
 
 **Response:**
@@ -133,10 +130,7 @@ response = requests.post(
 Generate GradCAM heatmaps showing model attention:
 
 ```python
-response = requests.post(
-    "http://localhost:8000/explain",
-    files={"file": open("ct_scan.png", "rb")}
-)
+response = requests.post("http://localhost:8000/explain", files={"file": open("ct_scan.png", "rb")})
 
 # Returns base64-encoded heatmap
 heatmap_data = response.json()["explanation"]["heatmap"]
@@ -517,11 +511,7 @@ probabilities = result["probabilities"]  # 🆕 New
 st.session_state["last_prediction"] = {"pred_class": ..., "pred_index": ...}
 
 # New (automatic migration)
-st.session_state["last_prediction"] = {
-    "class": ...,
-    "class_index": ...,
-    "confidence": ...
-}
+st.session_state["last_prediction"] = {"class": ..., "class_index": ..., "confidence": ...}
 ```
 
 ---
