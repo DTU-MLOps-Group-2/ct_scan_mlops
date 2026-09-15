@@ -39,7 +39,7 @@ import requests
 st.title("ML Application")
 
 # File upload
-uploaded_file = st.file_uploader("Choose an image", type=['png', 'jpg', 'jpeg'])
+uploaded_file = st.file_uploader("Choose an image", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
     # Display image
@@ -54,7 +54,7 @@ if uploaded_file is not None:
         if response.ok:
             result = response.json()
             st.success(f"Prediction: {result['class']}")
-            st.bar_chart(result['probabilities'])
+            st.bar_chart(result["probabilities"])
 ```
 
 ### Run App
@@ -97,6 +97,7 @@ with col2:
 # Sidebar
 st.sidebar.title("Settings")
 
+
 # Caching
 @st.cache_resource
 def load_model():
@@ -113,6 +114,7 @@ import torch
 
 app = FastAPI()
 
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     image = Image.open(file.file)
@@ -122,10 +124,7 @@ async def predict(file: UploadFile = File(...)):
         output = model(tensor.unsqueeze(0))
 
     probs = torch.softmax(output, dim=1)
-    return {
-        "class": classes[probs.argmax()],
-        "probabilities": probs.tolist()
-    }
+    return {"class": classes[probs.argmax()], "probabilities": probs.tolist()}
 ```
 
 ### Streamlit Frontend
@@ -134,10 +133,12 @@ async def predict(file: UploadFile = File(...)):
 import streamlit as st
 import requests
 
+
 @st.cache_resource
 def get_backend_url():
     # Use service discovery or environment variable
     return os.getenv("BACKEND_URL", "http://localhost:8000")
+
 
 def predict(image_bytes):
     url = f"{get_backend_url()}/predict"
