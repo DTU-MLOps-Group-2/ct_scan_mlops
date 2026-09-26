@@ -51,12 +51,12 @@ jobs:
 # scripts/data_stats.py
 import pandas as pd
 
-df = pd.read_csv('data/processed/train.csv')
+df = pd.read_csv("data/processed/train.csv")
 print(f"# Dataset Statistics\n")
 print(f"- Total samples: {len(df)}")
 print(f"- Features: {df.shape[1]}")
 print(f"- Class distribution:")
-print(df['label'].value_counts().to_markdown())
+print(df["label"].value_counts().to_markdown())
 ```
 
 ## Model Staging & Deployment
@@ -105,6 +105,7 @@ jobs:
 import wandb
 import torch
 import time
+
 
 def test_inference_speed(model, n_samples=100):
     x = torch.randn(1, 3, 224, 224)

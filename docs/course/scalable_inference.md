@@ -17,11 +17,7 @@ import torch
 from ptflops import get_model_complexity_info
 
 model = MyModel()
-flops, params = get_model_complexity_info(
-    model,
-    (3, 224, 224),
-    as_strings=True
-)
+flops, params = get_model_complexity_info(model, (3, 224, 224), as_strings=True)
 print(f"FLOPs: {flops}, Params: {params}")
 ```
 
@@ -35,14 +31,10 @@ Convert 32-bit floats to integers:
 import torch.quantization
 
 # Dynamic quantization (easiest)
-quantized_model = torch.quantization.quantize_dynamic(
-    model,
-    {torch.nn.Linear, torch.nn.LSTM},
-    dtype=torch.qint8
-)
+quantized_model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear, torch.nn.LSTM}, dtype=torch.qint8)
 
 # Static quantization (better performance)
-model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
+model.qconfig = torch.quantization.get_default_qconfig("fbgemm")
 model_prepared = torch.quantization.prepare(model)
 # Calibrate with representative data
 for batch in calibration_loader:
@@ -63,23 +55,23 @@ Remove low-magnitude weights:
 import torch.nn.utils.prune as prune
 
 # Local pruning (per layer)
-prune.l1_unstructured(model.layer1, name='weight', amount=0.3)
+prune.l1_unstructured(model.layer1, name="weight", amount=0.3)
 
 # Global pruning (across network)
 parameters_to_prune = [
-    (model.layer1, 'weight'),
-    (model.layer2, 'weight'),
-    (model.layer3, 'weight'),
+    (model.layer1, "weight"),
+    (model.layer2, "weight"),
+    (model.layer3, "weight"),
 ]
 
 prune.global_unstructured(
     parameters_to_prune,
     pruning_method=prune.L1Unstructured,
-    amount=0.2  # Remove 20% of weights
+    amount=0.2,  # Remove 20% of weights
 )
 
 # Make permanent
-prune.remove(model.layer1, 'weight')
+prune.remove(model.layer1, "weight")
 ```
 
 ### 4. Knowledge Distillation
@@ -92,13 +84,14 @@ def distillation_loss(student_logits, teacher_logits, labels, temperature=3.0, a
     soft_loss = F.kl_div(
         F.log_softmax(student_logits / temperature, dim=1),
         F.softmax(teacher_logits / temperature, dim=1),
-        reduction='batchmean'
-    ) * (temperature ** 2)
+        reduction="batchmean",
+    ) * (temperature**2)
 
     # Hard targets
     hard_loss = F.cross_entropy(student_logits, labels)
 
     return alpha * soft_loss + (1 - alpha) * hard_loss
+
 
 # Training loop
 for batch, labels in dataloader:
@@ -118,18 +111,11 @@ import onnxruntime as ort
 from onnxruntime.transformers import optimizer
 
 # Optimize ONNX model
-optimized_model = optimizer.optimize_model(
-    "model.onnx",
-    model_type='bert',
-    opt_level=2
-)
+optimized_model = optimizer.optimize_model("model.onnx", model_type="bert", opt_level=2)
 optimized_model.save_model_to_file("model_optimized.onnx")
 
 # Use optimized runtime
-session = ort.InferenceSession(
-    "model_optimized.onnx",
-    providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider']
-)
+session = ort.InferenceSession("model_optimized.onnx", providers=["TensorrtExecutionProvider", "CUDAExecutionProvider"])
 ```
 
 ## Benchmarking
@@ -137,6 +123,7 @@ session = ort.InferenceSession(
 ```python
 import time
 import torch
+
 
 def benchmark_model(model, input_shape, num_runs=100):
     model.eval()
@@ -160,7 +147,7 @@ def benchmark_model(model, input_shape, num_runs=100):
         torch.cuda.synchronize()
 
     avg_time = (time.time() - start) / num_runs
-    print(f"Average inference time: {avg_time*1000:.2f}ms")
+    print(f"Average inference time: {avg_time * 1000:.2f}ms")
     return avg_time
 ```
 
