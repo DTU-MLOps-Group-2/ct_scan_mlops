@@ -52,6 +52,7 @@ Marks tests that require actual data files. These tests will be automatically sk
 ```python
 import pytest
 
+
 @pytest.mark.requires_data
 def test_load_real_dataset(skip_if_no_data):
     """Test loading actual processed dataset."""
