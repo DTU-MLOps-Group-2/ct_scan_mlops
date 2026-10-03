@@ -29,8 +29,8 @@ model.load_state_dict(torch.load("model.pt"))
 Three critical function calls are required:
 ```python
 optimizer.zero_grad()  # Prevents gradient accumulation
-loss.backward()        # Calculates gradients
-optimizer.step()       # Updates model weights
+loss.backward()  # Calculates gradients
+optimizer.step()  # Updates model weights
 ```
 
 ### Data Shape Requirements
@@ -47,11 +47,7 @@ Use `.unsqueeze()` to add channel dimensions when needed.
 
 Move models and data to available accelerators:
 ```python
-DEVICE = torch.device(
-    "cuda" if torch.cuda.is_available()
-    else "mps" if torch.backends.mps.is_available()
-    else "cpu"
-)
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 model = model.to(DEVICE)
 data = data.to(DEVICE)
