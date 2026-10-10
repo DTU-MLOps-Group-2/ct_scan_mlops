@@ -20,14 +20,11 @@ Extends `nn.Module` with two essential methods:
 import pytorch_lightning as pl
 import torch.nn as nn
 
+
 class MyModel(pl.LightningModule):
     def __init__(self, hidden_size=256):
         super().__init__()
-        self.model = nn.Sequential(
-            nn.Linear(784, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, 10)
-        )
+        self.model = nn.Sequential(nn.Linear(784, hidden_size), nn.ReLU(), nn.Linear(hidden_size, 10))
         self.loss_fn = nn.CrossEntropyLoss()
 
     def forward(self, x):
@@ -37,7 +34,7 @@ class MyModel(pl.LightningModule):
         x, y = batch
         logits = self(x)
         loss = self.loss_fn(logits, y)
-        self.log('train_loss', loss)
+        self.log("train_loss", loss)
         return loss
 
     def configure_optimizers(self):
@@ -74,6 +71,7 @@ trainer.fit(model, train_dataloader)
 def train_dataloader(self):
     return DataLoader(train_dataset, batch_size=32)
 
+
 def val_dataloader(self):
     return DataLoader(val_dataset, batch_size=32)
 ```
@@ -101,17 +99,9 @@ Self-contained features added via the callbacks list:
 ```python
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
-checkpoint_callback = ModelCheckpoint(
-    monitor='val_loss',
-    mode='min',
-    save_top_k=3
-)
+checkpoint_callback = ModelCheckpoint(monitor="val_loss", mode="min", save_top_k=3)
 
-early_stopping = EarlyStopping(
-    monitor='val_loss',
-    patience=5,
-    mode='min'
-)
+early_stopping = EarlyStopping(monitor="val_loss", patience=5, mode="min")
 
 trainer = Trainer(callbacks=[checkpoint_callback, early_stopping])
 ```
@@ -123,25 +113,27 @@ def validation_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
     loss = self.loss_fn(logits, y)
-    self.log('val_loss', loss, on_epoch=True)
+    self.log("val_loss", loss, on_epoch=True)
     return loss
+
 
 def test_step(self, batch, batch_idx):
     x, y = batch
     logits = self(x)
     acc = (logits.argmax(dim=1) == y).float().mean()
-    self.log('test_acc', acc)
+    self.log("test_acc", acc)
 ```
 
 ### Logging Integration
 
 ```python
 # Scalar logging
-self.log('train_loss', loss)
+self.log("train_loss", loss)
 
 # Wandb integration
 from pytorch_lightning.loggers import WandbLogger
-logger = WandbLogger(project='my-project')
+
+logger = WandbLogger(project="my-project")
 trainer = Trainer(logger=logger)
 
 # Access raw wandb

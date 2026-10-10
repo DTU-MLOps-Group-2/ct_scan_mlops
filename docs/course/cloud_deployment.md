@@ -25,6 +25,7 @@ bucket = storage_client.bucket("my-bucket")
 blob = bucket.blob("model.pkl")
 model = pickle.loads(blob.download_as_string())
 
+
 @functions_framework.http
 def predict(request):
     data = request.get_json()
