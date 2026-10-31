@@ -83,13 +83,19 @@ ruff check --fix  # Auto-fix violations
 def process(data: int | float | list[int]) -> dict[str, any]:
     pass
 
+
 # Earlier versions
 from typing import Union, List, Dict, Any
+
+
 def process(data: Union[int, float, List[int]]) -> Dict[str, Any]:
     pass
 
+
 # Optional parameters
 from typing import Optional
+
+
 def fetch(url: str, timeout: Optional[int] = None) -> str:
     pass
 ```
