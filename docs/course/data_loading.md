@@ -13,6 +13,7 @@ Data loading should never be the performance bottleneck. The goal is to ensure c
 ```python
 from torch.utils.data import Dataset, DataLoader
 
+
 class MyDataset(Dataset):
     def __init__(self, data_path):
         self.data_path = data_path
@@ -27,12 +28,13 @@ class MyDataset(Dataset):
         tensor = self.transform(image)
         return tensor, self.labels[idx]
 
+
 dataloader = DataLoader(
     dataset,
     batch_size=32,
-    num_workers=4,      # Parallel data loading
+    num_workers=4,  # Parallel data loading
     shuffle=True,
-    pin_memory=True     # Faster CPU→GPU transfer
+    pin_memory=True,  # Faster CPU→GPU transfer
 )
 ```
 
@@ -87,7 +89,7 @@ for num_workers in [0, 1, 2, 4, 8]:
 dataloader = DataLoader(
     dataset,
     num_workers=4,
-    multiprocessing_context="fork"  # Required for Mac M1
+    multiprocessing_context="fork",  # Required for Mac M1
 )
 ```
 
@@ -97,7 +99,7 @@ dataloader = DataLoader(
 # When data fits in GPU memory
 dataloader = DataLoader(
     dataset,
-    pin_memory=True  # Accelerates CPU→GPU transfer
+    pin_memory=True,  # Accelerates CPU→GPU transfer
 )
 ```
 
@@ -110,6 +112,7 @@ dataloader = DataLoader(
 class BadDataset(Dataset):
     def __init__(self, path):
         self.data = [load_image(f) for f in os.listdir(path)]
+
 
 # Good: Load on demand
 class GoodDataset(Dataset):
@@ -126,10 +129,7 @@ class GoodDataset(Dataset):
 from torch.utils.data import TensorDataset
 
 # If data is already processed and fits in memory
-dataset = TensorDataset(
-    torch.tensor(images),
-    torch.tensor(labels)
-)
+dataset = TensorDataset(torch.tensor(images), torch.tensor(labels))
 ```
 
 ## Performance Measurement
@@ -137,6 +137,7 @@ dataset = TensorDataset(
 ```python
 import time
 from tqdm import tqdm
+
 
 def benchmark_dataloader(loader, num_batches=100):
     start = time.time()
@@ -146,6 +147,7 @@ def benchmark_dataloader(loader, num_batches=100):
         # Simulate GPU transfer
         batch[0].cuda()
     return time.time() - start
+
 
 # Compare configurations
 for workers in [0, 2, 4, 8]:
