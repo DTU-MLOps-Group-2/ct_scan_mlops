@@ -23,25 +23,19 @@ Source: https://skaftenicki.github.io/dtu_mlops/s7_deployment/apis/
 import requests
 
 # GET request
-response = requests.get('https://api.github.com')
+response = requests.get("https://api.github.com")
 print(response.status_code)  # 200
-print(response.json())       # Parse JSON
+print(response.json())  # Parse JSON
 
 # With query parameters
-response = requests.get(
-    'https://api.github.com/search/repositories',
-    params={'q': 'pytorch'}
-)
+response = requests.get("https://api.github.com/search/repositories", params={"q": "pytorch"})
 
 # POST request
-response = requests.post(
-    'https://httpbin.org/post',
-    json={'key': 'value'}
-)
+response = requests.post("https://httpbin.org/post", json={"key": "value"})
 
 # Download file
-response = requests.get('https://example.com/image.png')
-with open('image.png', 'wb') as f:
+response = requests.get("https://example.com/image.png")
+with open("image.png", "wb") as f:
     f.write(response.content)
 ```
 
@@ -60,9 +54,11 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str = None):
@@ -104,10 +100,12 @@ def list_items(skip: int = 0, limit: int = 10):
 ```python
 from pydantic import BaseModel
 
+
 class Item(BaseModel):
     name: str
     price: float
     quantity: int = 1
+
 
 @app.post("/items")
 def create_item(item: Item):
@@ -118,6 +116,7 @@ def create_item(item: Item):
 
 ```python
 from fastapi import File, UploadFile
+
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -132,6 +131,7 @@ async def upload_file(file: UploadFile = File(...)):
 ```python
 from contextlib import asynccontextmanager
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -142,7 +142,9 @@ async def lifespan(app: FastAPI):
     # Shutdown
     del model
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
