@@ -36,9 +36,9 @@ python -m cProfile -o profile.txt myscript.py
 ```python
 import pstats
 
-p = pstats.Stats('profile.txt')
-p.sort_stats('cumulative').print_stats(10)
-p.sort_stats('time').print_stats(10)
+p = pstats.Stats("profile.txt")
+p.sort_stats("cumulative").print_stats(10)
+p.sort_stats("time").print_stats(10)
 ```
 
 ## PyTorch Profiler
@@ -57,10 +57,7 @@ print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=10))
 ### Memory Profiling
 
 ```python
-with profile(
-    activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
-    profile_memory=True
-) as prof:
+with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], profile_memory=True) as prof:
     model(inputs)
 ```
 
@@ -77,8 +74,7 @@ prof.export_chrome_trace("trace.json")
 from torch.profiler import tensorboard_trace_handler
 
 with profile(
-    activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
-    on_trace_ready=tensorboard_trace_handler("./log_dir")
+    activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], on_trace_ready=tensorboard_trace_handler("./log_dir")
 ) as prof:
     for batch in dataloader:
         model(batch)
@@ -91,16 +87,10 @@ Common optimization: converting PIL image transforms to direct tensor operations
 
 ```python
 # Slow: PIL-based transforms
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean, std)
-])
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean, std)])
 
 # Faster: Pre-convert to tensors
-dataset = TensorDataset(
-    torch.tensor(images),
-    torch.tensor(labels)
-)
+dataset = TensorDataset(torch.tensor(images), torch.tensor(labels))
 ```
 
 ## Additional Tools
