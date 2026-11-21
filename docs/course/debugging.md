@@ -9,6 +9,7 @@ Source: https://skaftenicki.github.io/dtu_mlops/s4_debugging_and_logging/debuggi
 Insert breakpoints manually in code:
 ```python
 import pdb
+
 pdb.set_trace()  # Execution stops here
 ```
 
@@ -55,8 +56,8 @@ Dimension mismatches in tensor operations:
 ```python
 # Bug
 x = torch.randn(32, 3, 28, 28)  # [N, C, H, W]
-model = nn.Linear(28, 10)       # Expects flattened input
-output = model(x)               # RuntimeError!
+model = nn.Linear(28, 10)  # Expects flattened input
+output = model(x)  # RuntimeError!
 
 # Fix
 x = x.view(32, -1)  # Flatten to [N, 784]
