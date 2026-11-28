@@ -36,6 +36,7 @@ tests/
 
 ```python
 import os
+
 _TEST_ROOT = os.path.dirname(__file__)
 _PROJECT_ROOT = os.path.dirname(_TEST_ROOT)
 _PATH_DATA = os.path.join(_PROJECT_ROOT, "data")
@@ -49,14 +50,17 @@ _PATH_DATA = os.path.join(_PROJECT_ROOT, "data")
 import pytest
 from tests import _PATH_DATA
 
+
 def test_dataset_length():
     dataset = MyDataset(_PATH_DATA)
     assert len(dataset) == 1000
+
 
 def test_sample_shape():
     dataset = MyDataset(_PATH_DATA)
     x, y = dataset[0]
     assert x.shape == (1, 28, 28)
+
 
 def test_all_labels_present():
     dataset = MyDataset(_PATH_DATA)
@@ -71,11 +75,13 @@ import torch
 import pytest
 from src.model import MyModel
 
+
 def test_model_output_shape():
     model = MyModel()
     x = torch.randn(32, 1, 28, 28)
     output = model(x)
     assert output.shape == (32, 10)
+
 
 def test_model_invalid_input():
     model = MyModel()
@@ -104,10 +110,7 @@ def test_model_batch_sizes(batch_size: int):
 Conditionally skip tests:
 
 ```python
-@pytest.mark.skipif(
-    not os.path.exists(_PATH_DATA),
-    reason="Data files not found"
-)
+@pytest.mark.skipif(not os.path.exists(_PATH_DATA), reason="Data files not found")
 def test_data_loading():
     pass
 ```
@@ -121,9 +124,11 @@ Reusable test components:
 def model():
     return MyModel()
 
+
 @pytest.fixture
 def sample_batch():
     return torch.randn(32, 1, 28, 28)
+
 
 def test_forward(model, sample_batch):
     output = model(sample_batch)
@@ -137,7 +142,7 @@ Verify exceptions raise appropriately:
 ```python
 def test_invalid_input_raises():
     model = MyModel()
-    with pytest.raises(ValueError, match='Expected input to be a 4D tensor'):
+    with pytest.raises(ValueError, match="Expected input to be a 4D tensor"):
         model(torch.randn(1, 2, 3))
 ```
 
