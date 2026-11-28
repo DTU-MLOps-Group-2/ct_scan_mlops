@@ -60,18 +60,19 @@ Radiomics features have been extensively validated in peer-reviewed literature f
 from scipy import stats
 import numpy as np
 
+
 def extract_intensity_features(image: np.ndarray) -> dict:
     """Extract intensity-based features from CT image."""
     flat = image.flatten()
     return {
-        'mean_intensity': np.mean(flat),
-        'std_intensity': np.std(flat),
-        'skewness': stats.skew(flat),
-        'kurtosis': stats.kurtosis(flat),
-        'percentile_10': np.percentile(flat, 10),
-        'percentile_90': np.percentile(flat, 90),
-        'intensity_range': np.percentile(flat, 90) - np.percentile(flat, 10),
-        'entropy': stats.entropy(np.histogram(flat, bins=256)[0] + 1e-10),
+        "mean_intensity": np.mean(flat),
+        "std_intensity": np.std(flat),
+        "skewness": stats.skew(flat),
+        "kurtosis": stats.kurtosis(flat),
+        "percentile_10": np.percentile(flat, 10),
+        "percentile_90": np.percentile(flat, 90),
+        "intensity_range": np.percentile(flat, 90) - np.percentile(flat, 10),
+        "entropy": stats.entropy(np.histogram(flat, bins=256)[0] + 1e-10),
     }
 ```
 
@@ -103,29 +104,29 @@ def extract_intensity_features(image: np.ndarray) -> dict:
 from skimage.feature import graycomatrix, graycoprops
 import numpy as np
 
-def extract_glcm_features(image: np.ndarray,
-                          distances: list = [1, 2, 3],
-                          angles: list = [0, np.pi/4, np.pi/2, 3*np.pi/4]) -> dict:
+
+def extract_glcm_features(
+    image: np.ndarray, distances: list = [1, 2, 3], angles: list = [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4]
+) -> dict:
     """Extract GLCM texture features from CT image."""
     # Normalize to 0-255 range for GLCM
     image_uint8 = ((image - image.min()) / (image.max() - image.min()) * 255).astype(np.uint8)
 
     # Compute GLCM
-    glcm = graycomatrix(image_uint8, distances=distances, angles=angles,
-                        levels=256, symmetric=True, normed=True)
+    glcm = graycomatrix(image_uint8, distances=distances, angles=angles, levels=256, symmetric=True, normed=True)
 
     features = {}
-    properties = ['contrast', 'homogeneity', 'energy', 'correlation', 'dissimilarity', 'ASM']
+    properties = ["contrast", "homogeneity", "energy", "correlation", "dissimilarity", "ASM"]
 
     for prop in properties:
         values = graycoprops(glcm, prop)
-        features[f'glcm_{prop}_mean'] = np.mean(values)
-        features[f'glcm_{prop}_std'] = np.std(values)
+        features[f"glcm_{prop}_mean"] = np.mean(values)
+        features[f"glcm_{prop}_std"] = np.std(values)
 
     # Compute entropy separately
     glcm_normalized = glcm / (glcm.sum() + 1e-10)
     entropy = -np.sum(glcm_normalized * np.log2(glcm_normalized + 1e-10))
-    features['glcm_entropy'] = entropy
+    features["glcm_entropy"] = entropy
 
     return features
 ```
@@ -160,6 +161,7 @@ from skimage import measure
 from skimage.measure import regionprops
 import numpy as np
 
+
 def extract_shape_features(image: np.ndarray, threshold: float = None) -> dict:
     """Extract shape/morphological features from CT image."""
     # Binarize image (segment region of interest)
@@ -173,8 +175,9 @@ def extract_shape_features(image: np.ndarray, threshold: float = None) -> dict:
 
     if labeled.max() == 0:
         # No regions found, return zeros
-        return {k: 0.0 for k in ['area', 'perimeter', 'eccentricity', 'solidity',
-                                  'extent', 'compactness', 'sphericity']}
+        return {
+            k: 0.0 for k in ["area", "perimeter", "eccentricity", "solidity", "extent", "compactness", "sphericity"]
+        }
 
     # Get largest region
     regions = regionprops(labeled)
@@ -184,19 +187,19 @@ def extract_shape_features(image: np.ndarray, threshold: float = None) -> dict:
     perimeter = largest.perimeter
 
     # Compute derived features
-    compactness = (perimeter ** 2) / (4 * np.pi * area) if area > 0 else 0
-    sphericity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
+    compactness = (perimeter**2) / (4 * np.pi * area) if area > 0 else 0
+    sphericity = (4 * np.pi * area) / (perimeter**2) if perimeter > 0 else 0
 
     return {
-        'area': area,
-        'perimeter': perimeter,
-        'eccentricity': largest.eccentricity,
-        'solidity': largest.solidity,
-        'extent': largest.extent,
-        'major_axis_length': largest.major_axis_length,
-        'minor_axis_length': largest.minor_axis_length,
-        'compactness': compactness,
-        'sphericity': sphericity,
+        "area": area,
+        "perimeter": perimeter,
+        "eccentricity": largest.eccentricity,
+        "solidity": largest.solidity,
+        "extent": largest.extent,
+        "major_axis_length": largest.major_axis_length,
+        "minor_axis_length": largest.minor_axis_length,
+        "compactness": compactness,
+        "sphericity": sphericity,
     }
 ```
 
@@ -225,6 +228,7 @@ def extract_shape_features(image: np.ndarray, threshold: float = None) -> dict:
 import numpy as np
 from scipy import ndimage
 
+
 def extract_region_features(image: np.ndarray) -> dict:
     """Extract region-based features for GGO/solid/cavity detection."""
     # Normalize image to 0-1
@@ -235,8 +239,8 @@ def extract_region_features(image: np.ndarray) -> dict:
     total_pixels = img_norm.size
 
     # Approximate thresholds for normalized images
-    low_threshold = 0.2    # Air/cavity regions
-    ggo_threshold = 0.5    # Ground-glass opacity
+    low_threshold = 0.2  # Air/cavity regions
+    ggo_threshold = 0.5  # Ground-glass opacity
     solid_threshold = 0.7  # Solid tissue
 
     low_density_pixels = np.sum(img_norm < low_threshold)
@@ -253,12 +257,12 @@ def extract_region_features(image: np.ndarray) -> dict:
     boundary_irregularity = np.std(gradient_magnitude[edge_mask]) if edge_mask.any() else 0
 
     return {
-        'solid_ratio': solid_pixels / total_pixels,
-        'ggo_ratio': ggo_pixels / total_pixels,
-        'low_density_ratio': low_density_pixels / total_pixels,
-        'mean_gradient': np.mean(gradient_magnitude),
-        'max_gradient': np.max(gradient_magnitude),
-        'boundary_irregularity': boundary_irregularity,
+        "solid_ratio": solid_pixels / total_pixels,
+        "ggo_ratio": ggo_pixels / total_pixels,
+        "low_density_ratio": low_density_pixels / total_pixels,
+        "mean_gradient": np.mean(gradient_magnitude),
+        "max_gradient": np.max(gradient_magnitude),
+        "boundary_irregularity": boundary_irregularity,
     }
 ```
 
@@ -285,7 +289,8 @@ def extract_region_features(image: np.ndarray) -> dict:
 import pywt
 import numpy as np
 
-def extract_wavelet_features(image: np.ndarray, wavelet: str = 'db4', level: int = 2) -> dict:
+
+def extract_wavelet_features(image: np.ndarray, wavelet: str = "db4", level: int = 2) -> dict:
     """Extract wavelet-based texture features."""
     features = {}
 
@@ -296,19 +301,19 @@ def extract_wavelet_features(image: np.ndarray, wavelet: str = 'db4', level: int
         LH, HL, HH = detail_coeffs
 
         # Energy in each subband
-        features[f'wavelet_L{i}_LH_energy'] = np.sum(LH ** 2)
-        features[f'wavelet_L{i}_HL_energy'] = np.sum(HL ** 2)
-        features[f'wavelet_L{i}_HH_energy'] = np.sum(HH ** 2)
+        features[f"wavelet_L{i}_LH_energy"] = np.sum(LH**2)
+        features[f"wavelet_L{i}_HL_energy"] = np.sum(HL**2)
+        features[f"wavelet_L{i}_HH_energy"] = np.sum(HH**2)
 
         # Mean absolute values
-        features[f'wavelet_L{i}_LH_mean'] = np.mean(np.abs(LH))
-        features[f'wavelet_L{i}_HL_mean'] = np.mean(np.abs(HL))
-        features[f'wavelet_L{i}_HH_mean'] = np.mean(np.abs(HH))
+        features[f"wavelet_L{i}_LH_mean"] = np.mean(np.abs(LH))
+        features[f"wavelet_L{i}_HL_mean"] = np.mean(np.abs(HL))
+        features[f"wavelet_L{i}_HH_mean"] = np.mean(np.abs(HH))
 
     # Approximation coefficients
     approx = coeffs[0]
-    features['wavelet_approx_energy'] = np.sum(approx ** 2)
-    features['wavelet_approx_mean'] = np.mean(approx)
+    features["wavelet_approx_energy"] = np.sum(approx**2)
+    features["wavelet_approx_mean"] = np.mean(approx)
 
     return features
 ```
@@ -354,13 +359,14 @@ from .wavelet import extract_wavelet_features
 @dataclass
 class FeatureConfig:
     """Configuration for feature extraction."""
+
     use_intensity: bool = True
     use_glcm: bool = True
     use_shape: bool = True
     use_region: bool = True
     use_wavelet: bool = True
     glcm_distances: list = (1, 2, 3)
-    wavelet_type: str = 'db4'
+    wavelet_type: str = "db4"
     wavelet_level: int = 2
 
 
@@ -391,8 +397,7 @@ class FeatureExtractor:
             features.update(extract_intensity_features(image))
 
         if self.config.use_glcm:
-            features.update(extract_glcm_features(image,
-                                                   distances=list(self.config.glcm_distances)))
+            features.update(extract_glcm_features(image, distances=list(self.config.glcm_distances)))
 
         if self.config.use_shape:
             features.update(extract_shape_features(image))
@@ -401,9 +406,9 @@ class FeatureExtractor:
             features.update(extract_region_features(image))
 
         if self.config.use_wavelet:
-            features.update(extract_wavelet_features(image,
-                                                      wavelet=self.config.wavelet_type,
-                                                      level=self.config.wavelet_level))
+            features.update(
+                extract_wavelet_features(image, wavelet=self.config.wavelet_type, level=self.config.wavelet_level)
+            )
 
         # Convert to array
         feature_array = np.array(list(features.values()), dtype=np.float32)
@@ -466,6 +471,7 @@ class FeatureExtractor:
 ```python
 # Addition to src/ct_scan_mlops/model.py
 
+
 class DualPathwayModel(nn.Module):
     """Dual-pathway model combining CNN features with hand-crafted radiomics features.
 
@@ -486,9 +492,9 @@ class DualPathwayModel(nn.Module):
     def __init__(
         self,
         num_classes: int = 4,
-        feature_dim: int = 64,      # Dimension of radiomics feature branch output
+        feature_dim: int = 64,  # Dimension of radiomics feature branch output
         cnn_feature_dim: int = 512,  # Dimension of CNN feature output
-        fusion_hidden: int = 256,    # Hidden dimension in fusion layers
+        fusion_hidden: int = 256,  # Hidden dimension in fusion layers
         dropout: float = 0.3,
         pretrained: bool = True,
         freeze_backbone: bool = False,
@@ -722,6 +728,7 @@ import pytest
 import numpy as np
 from ct_scan_mlops.features import FeatureExtractor, FeatureConfig
 
+
 def test_feature_extractor_output_shape():
     extractor = FeatureExtractor()
     image = np.random.rand(224, 224).astype(np.float32)
@@ -729,12 +736,15 @@ def test_feature_extractor_output_shape():
     assert features.ndim == 1
     assert len(features) == extractor.feature_dim
 
+
 def test_feature_extractor_batch():
     import torch
+
     extractor = FeatureExtractor()
     batch = torch.rand(4, 3, 224, 224)
     features = extractor.extract_batch(batch)
     assert features.shape == (4, extractor.feature_dim)
+
 
 def test_features_no_nan():
     extractor = FeatureExtractor()
